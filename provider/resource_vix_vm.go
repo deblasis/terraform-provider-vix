@@ -84,17 +84,25 @@ func resourceVIXVM() *schema.Resource {
 				ForceNew: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+						"fromPath": &schema.Schema{
+							Type:     schema.TypeBool,
+							Required: true,
+						},
+						"path": &schema.Schema{
+							Type:     schema.TypeString,
+							Optional: true,
+						},
 						"url": &schema.Schema{
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 						"checksum": &schema.Schema{
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 						"checksum_type": &schema.Schema{
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 						"password": &schema.Schema{
 							Type:     schema.TypeString,
@@ -305,11 +313,14 @@ func tf_to_vix(d *schema.ResourceData, vm *vix.VM) error {
 	if i := d.Get("image.#").(int); i > 0 {
 		prefix := "image.0."
 		vm.Image = vix.Image{
+			FromPath:     d.Get(prefix + "fromPath").(bool),
+			Path:         d.Get(prefix + "path").(string),
 			URL:          d.Get(prefix + "url").(string),
 			Checksum:     d.Get(prefix + "checksum").(string),
 			ChecksumType: d.Get(prefix + "checksum_type").(string),
 			Password:     d.Get(prefix + "password").(string),
 		}
+
 	}
 
 	err = cdrom_tf_to_vix(d, vm)

@@ -21,6 +21,10 @@ import (
 
 // A virtual machine image definition
 type Image struct {
+	// true if sourced from Path
+	FromPath bool
+	// Path of the image file
+	Path string
 	// Image URL where to download from
 	URL string
 	// Checksum of the image, used to check integrity after downloading it
