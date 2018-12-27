@@ -127,9 +127,16 @@ func (v *VM) Create() (string, error) {
 	if os.IsNotExist(err) || goldPathEmpty {
 		log.Println("[DEBUG] Gold virtual machine does not exist or is empty")
 
-		imgPath := filepath.Join(usr.HomeDir, ".terraform/vix/images", image.Checksum)
-		if err = image.Download(imgPath); err != nil {
-			return "", err
+		if image.FromPath {
+			image.file, err = os.Open(image.Path)
+			if err != nil {
+				log.Printf("[DEBUG] %s Opening file...", image.Path)
+			}
+		} else {
+			imgPath := filepath.Join(usr.HomeDir, ".terraform/vix/images", image.Checksum)
+			if err = image.Download(imgPath); err != nil {
+				return "", err
+			}
 		}
 		defer image.file.Close()
 
