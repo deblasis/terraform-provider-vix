@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/hooklift/terraform-provider-vix",
 	"GoVersion": "go1.8",
-	"GodepVersion": "v79",
+	"GodepVersion": "v80",
 	"Packages": [
 		"./..."
 	],
@@ -110,11 +110,11 @@
 		},
 		{
 			"ImportPath": "github.com/hooklift/govix",
-			"Rev": "4bb856ca002a8920a9383b01b3abaa32f8ab8ca4"
+			"Rev": "063702285520a992b920fc1575e305dc9ffd6ffe"
 		},
 		{
-			"ImportPath": "github.com/hooklift/govmx",
-			"Rev": "9a0f42270603502ca96ccba24f8d9e41fb3b6093"
+			"ImportPath": "github.com/deblasis/govmx",
+			"Rev": "1a99314c4f4e2615d87f12c5931cd1aa29d4fcde"
 		},
 		{
 			"ImportPath": "github.com/klauspost/compress/flate",

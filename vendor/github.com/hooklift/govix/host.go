@@ -1,6 +1,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 package vix
 
 /*
@@ -11,12 +12,15 @@ import "C"
 
 import "unsafe"
 
+// Host represents a physical machine where the hypervisor is running.
 type Host struct {
 	Provider Provider
 	handle   C.VixHandle
+	// items contains the result of FindItems
+	items []string
 }
 
-// Destroys the state for a particular host instance
+// Disconnect destroys the state for a particular host instance.
 //
 // Call this function to disconnect the host. After you call this function the
 // Host object is no longer valid and you should not longer use it.
@@ -39,32 +43,30 @@ func (h *Host) Disconnect() {
 	}
 }
 
-//export go_callback_char
-func go_callback_char(callbackPtr unsafe.Pointer, item *C.char) {
-	callback := *(*func(*C.char))(callbackPtr)
-	callback(item)
+//export addItem
+func addItem(hostPtr unsafe.Pointer, item *C.char) {
+	host := (*Host)(hostPtr)
+	host.items = append(host.items, C.GoString(item))
 }
 
-// This function finds Vix objects. For example, when used to find all
+// FindItems finds VIX objects. For example, when used to find all
 // running virtual machines, Host.FindItems() returns a series of virtual
 // machine file path names.
 func (h *Host) FindItems(options SearchType) ([]string, error) {
 	var jobHandle C.VixHandle = C.VIX_INVALID_HANDLE
 	var err C.VixError = C.VIX_OK
-	var items []string
-
-	callback := func(item *C.char) {
-		items = append(items, C.GoString(item))
-	}
 
 	jobHandle = C.VixHost_FindItems(h.handle,
 		C.VixFindItemType(options), //searchType
 		C.VIX_INVALID_HANDLE,       //searchCriteria
 		-1,                         //timeout
 		(*C.VixEventProc)(C.find_items_callback), //callbackProc
-		unsafe.Pointer(&callback))                //clientData
+		unsafe.Pointer(h))                        //clientData
 
-	defer C.Vix_ReleaseHandle(jobHandle)
+	defer func() {
+		h.items = []string{}
+		C.Vix_ReleaseHandle(jobHandle)
+	}()
 
 	err = C.vix_job_wait(jobHandle)
 	if C.VIX_OK != err {
@@ -75,11 +77,10 @@ func (h *Host) FindItems(options SearchType) ([]string, error) {
 		}
 	}
 
-	return items, nil
+	return h.items, nil
 }
 
-// This function opens a virtual machine on the host
-// and returns a VM instance.
+// OpenVM opens a virtual machine on the host and returns a VM instance.
 //
 // Parameters:
 //
@@ -165,7 +166,7 @@ func (h *Host) OpenVM(vmxFile, password string) (*VM, error) {
 	return NewVirtualMachine(vmHandle, vmxFile)
 }
 
-// This function adds a virtual machine to the host's inventory.
+// RegisterVM adds a virtual machine to the host's inventory.
 //
 // Parameters:
 //
@@ -220,7 +221,7 @@ func (h *Host) RegisterVM(vmxFile string) error {
 	return nil
 }
 
-// This function removes a virtual machine from the host's inventory.
+// UnregisterVM removes a virtual machine from the host's inventory.
 //
 // Parameters:
 //
@@ -269,7 +270,7 @@ func (h *Host) UnregisterVM(vmxFile string) error {
 	return nil
 }
 
-// Copies a file or directory from the local system (where the Vix client is
+// CopyFileToGuest copies a file or directory from the local system (where the Vix client is
 // running) to the guest operating system.
 //
 // Parameters:
