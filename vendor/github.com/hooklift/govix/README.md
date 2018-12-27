@@ -1,11 +1,11 @@
 # VMware VIX API for GO
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/hooklift/govix?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hooklift/govix?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![GoDoc](https://godoc.org/github.com/hooklift/govix?status.svg)](https://godoc.org/github.com/hooklift/govix)
 [![Build Status](https://travis-ci.org/hooklift/govix.svg?branch=master)](https://travis-ci.org/hooklift/govix)
 
 The VIX API allows you to automate virtual machine operations on most current VMware hosted products such as: vmware workstation, player, fusion and server.
 
-vSphere API, starting from 5.0, merged VIX API in the so-called GuestOperationsManager managed object. So, we encourage you to use govsphere for vSphere.
+vSphere API, starting from 5.0, merged VIX API in the so-called GuestOperationsManager managed object. So, we encourage you to use https://github.com/vmware/govmomi for vSphere instead.
 
 ## Mailing list
 **Google groups:** https://groups.google.com/group/govix
@@ -15,7 +15,6 @@ This API supports:
 
 * Adding, removing and listing virtual networks adapters attached to a VM
 * Adding and removing virtual CPUs and memory from a VM
-* Managing virtual switches
 * Managing virtual machines life cycle: power on, power off, reset, pause and resume.
 * Adding and removing shared folders
 * Taking screenshots from a running VM
@@ -36,7 +35,7 @@ In order for Go to find libvix when running your compiled binary, a govix path h
 * **Linux:** `export LD_LIBRARY_PATH=${GOPATH}/src/github.com/hooklift/govix/vendor/libvix`
 * **Windows:** append the path to the PATH environment variable
 
-Be aware that the previous example assumes $GOPATH only has a path set.
+Be aware that the previous example assumes $GOPATH only has one path set.
 
 ## Debugging
 ### Enabling debug logs

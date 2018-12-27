@@ -11,7 +11,7 @@ import (
 	"time"
 
 	govix "github.com/hooklift/govix"
-	"github.com/hooklift/govmx"
+	"github.com/deblasis/govmx"
 	"github.com/hooklift/terraform-provider-vix/provider/vix"
 
 	multierror "github.com/hashicorp/go-multierror"
